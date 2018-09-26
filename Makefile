@@ -19,7 +19,7 @@ deps:
 build: $(BINARY)
 
 clean:
-	rm $(BINARY)
+	rm -f $(BINARY)
 
 $(KEY):
 	ssh-keygen -f $(KEY) -P ''
