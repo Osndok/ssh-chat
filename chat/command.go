@@ -114,6 +114,40 @@ func InitCommands(c *Commands) {
 	})
 
 	c.Add(Command{
+		Prefix: "/lang",
+		Handler: func(room *Room, msg message.CommandMsg) error {
+			args := msg.Args()
+			switch len(args) {
+				case 0:
+					body := fmt.Sprintf("Your language is: %s", msg.From().Language())
+					room.Send(message.NewSystemMsg(body, msg.From()))
+				case 1:
+					//TODO: verify language is in set of acceptabile values
+					who := msg.From()
+					oldLanguage := who.Language();
+					who.SetLanguage(args[0])
+					body := fmt.Sprintf("%s language updated: %s -> %s", who.Name(), oldLanguage, who.Language())
+					room.Send(message.NewSystemMsg(body, msg.From()))
+				case 2:
+					if !room.IsOp(msg.From()) {
+						return errors.New("only ops can set other's language");
+					}
+					who, ok := room.MemberByID(SanitizeName(args[1]))
+					if !ok {
+						return errors.New("failed to find member")
+					}
+					oldLanguage := who.Language();
+					who.SetLanguage(args[0])
+					body := fmt.Sprintf("%s language updated: %s -> %s", who.Name(), oldLanguage, who.Language())
+					room.Send(message.NewSystemMsg(body, msg.From()))
+				default:
+					return errors.New("usage: /lang [code] [username]")
+			}
+			return nil
+		},
+	})
+
+	c.Add(Command{
 		Prefix: "/me",
 		Handler: func(room *Room, msg message.CommandMsg) error {
 			me := strings.TrimLeft(msg.Body(), "/me")

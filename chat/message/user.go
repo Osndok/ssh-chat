@@ -108,6 +108,14 @@ func (u *User) Close() {
 	})
 }
 
+func (u *User) Language() string {
+	return u.Identifier.Language()
+}
+
+func (u *User) SetLanguage(language string) {
+	u.Identifier.SetLanguage(language)
+}
+
 // Consume message buffer into the handler. Will block, should be called in a
 // goroutine.
 func (u *User) Consume() {

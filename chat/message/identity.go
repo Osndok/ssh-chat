@@ -5,6 +5,8 @@ type Identifier interface {
 	ID() string
 	SetID(string)
 	Name() string
+	Language() string
+	SetLanguage(string)
 }
 
 // SimpleID is a simple Identifier implementation used for testing.
